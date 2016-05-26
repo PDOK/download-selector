@@ -2,24 +2,29 @@
   (:require [download-selector.sheets :as sheets]
             [download-selector.styles :as styles]
             [cemerick.url :as url]
+            [goog.events :as events]
             [reagent.core :as reagent]
             [ol.extent :as ext]
             [ol.control :as ctrl]
             [ol.interaction.Select]
             [ol]
             [ol.proj :as proj])
+  (:require-macros [download-selector.version :refer [defgitref]])
   (:import [ol Map View]
            [ol.control ZoomToExtent]
            [ol.interaction.Interaction]
            [ol.layer Tile]
            [ol.layer]
            [ol.proj Projection]
-           [ol.source WMTS OSM TileDebug]))
+           [ol.source WMTS OSM TileDebug]
+           [goog.events EventType]))
 
 (enable-console-print!)
 (js* "proj4.defs(\"EPSG:28992\", \"+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +no_defs\");")
-
+(def git-ref (defgitref))
 (def selected (reagent/atom nil))
+
+(events/listen js/window EventType.KEYDOWN #(when (= (.-keyCode %1) 73) (js/alert (str "PDOK download selector.\nRevision " git-ref))))
 
 (def projection "EPSG:28992")
 (def matrixset-name "EPSG:28992")

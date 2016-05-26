@@ -1,6 +1,11 @@
-(defproject download-selector "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+(def version (slurp "VERSION"))
+(def git-ref (clojure.string/replace (:out (clojure.java.shell/sh "git" "rev-parse" "HEAD"))#"\n" "" ))
+
+(spit "resources/GITREF" git-ref)
+
+(defproject nl.pdok/download-selector version
+  :description "PDOK selector for extract downloads"
+  :url "http://www.pdok.nl"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
@@ -35,41 +40,11 @@
 
   :min-lein-version "2.5.0"
   :clean-targets ^{:protect false} ["resources/public/out" "resources/public/release"]
-  :source-paths ["src/cljs"]
+  :source-paths ["src/clj"]
   :target-path "target"
 
   :minify-assets {:assets  {"resources/public/release/app.css" ["resources/public/css/ol.css" "resources/public/css/site.css"]}
                   :options {:optimization :advanced}}
-
-  ;:cljsbuild {:builds {:dev {:source-paths ["src/cljs"]
-  ;                           :figwheel {:on-jsload "download-selector.brt/run"}
-  ;                           :compiler     {:main "download-selector.brt"
-  ;                                          :source-map true
-  ;                                          :output-to                 "resources/public/out/app.js"
-  ;                                          :output-dir                "resources/public/out"
-  ;                                          :asset-path                "/out"
-  ;                                          :optimizations             :none
-  ;                                          :pretty-print              true
-  ;                                          :closure-extra-annotations #{"api" "observable"}
-  ;                                          :closure-defines           {"goog.DEBUG"        false
-  ;                                                                      "ol.ENABLE_DOM"     true
-  ;                                                                      "ol.ENABLE_VECTOR"  true
-  ;                                                                      "ol.ENABLE_PROJ4JS" true
-  ;                                                                      "ol.ENABLE_WEBGL"  true}}}
-  ;                     :release {:source-paths ["src/cljs"]
-  ;                               :figwheel {:on-jsload "download-selector.brt/run"}
-  ;                               :compiler     {:main "download-selector.brt"
-  ;                                              :output-to                 "resources/public/release/app.js"
-  ;                                              :output-dir                "resources/public/release"
-  ;                                              :asset-path                "/release"
-  ;                                              :optimizations             :advanced
-  ;                                              :pretty-print              false
-  ;                                              :closure-extra-annotations #{"api" "observable"}
-  ;                                              :closure-defines           {"goog.DEBUG"        false
-  ;                                                                          "ol.ENABLE_DOM"     true
-  ;                                                                          "ol.ENABLE_VECTOR"  true
-  ;                                                                          "ol.ENABLE_PROJ4JS" true
-  ;                                                                          "ol.ENABLE_WEBGL"  true}}}}}
 
   :profiles {:dev {:hooks [leiningen.cljsbuild]
                    :cljsbuild {:builds {:dev {:source-paths ["src/cljs"]
