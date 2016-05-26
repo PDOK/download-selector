@@ -54,58 +54,66 @@
                                                               }))
                                           })))
 
-(def selector-features (sheets/create-features sheets/brt-rd-sheets))
+(defn create-selector-layer [sheets-identifier]
+  (let [sheets (case sheets-identifier
+                 "brt-rd" sheets/brt-rd
+                 "brt-gml" sheets/brt-gml
+                 "brt-25d" sheets/brt-25d
+                 "brt-50d" sheets/brt-50d
+                 "brt-100d" sheets/brt-100d
+                 sheets/brt-rd)
+        selector-features (sheets/create-features sheets)
+        selector-source (ol.source.Vector. (clj->js {:features selector-features}))
+        selector-layer (ol.layer.Vector. (clj->js {:source           selector-source
+                                                   :visible          true
+                                                   :visibleZoomLevel 1
+                                                   :style            (styles/less-more styles/default-style-no-label styles/default-style selector-view 4.5)}))]
+    selector-layer))
 
-(def selector-source (ol.source.Vector. (clj->js {:features selector-features})))
-(def selector-layer (ol.layer.Vector. (clj->js {:source           selector-source
-                                                :visible          true
-                                                :visibleZoomLevel 1
-                                                :style            (styles/less-more styles/default-style-no-label styles/default-style selector-view 3.0)})))
+(defn selector-map [sheets-identifier]
+  (reagent/create-class
+    {:component-did-mount
+                     (fn []
+                       (def selector-layer (create-selector-layer sheets-identifier))
+                       (def map1 (ol.Map. (clj->js {
+                                                    :logo     false
+                                                    :layers   [background, selector-layer]
+                                                    :target   "map"
+                                                    :view     selector-view
+                                                    :controls (ctrl/defaults (clj->js {:attributeOptions {:collapsible false}}))
+                                                    })))
 
-(def selector-map
-  (with-meta (fn [] [:div#map])
-             {:component-did-mount
-              (fn [this]
-                (def map1 (ol.Map. (clj->js {
-                                             :logo     false
-                                             :layers   [background, selector-layer]
-                                             :target   "map"
-                                             :view     selector-view
-                                             :controls (ctrl/defaults (clj->js {:attributeOptions {:collapsible false}}))
-                                             })))
+                       (def selector (ol.interaction.Select. (clj->js {:layers [selector-layer]
+                                                                       :style  styles/highlight-style
+                                                                       })))
 
-                (def selector (ol.interaction.Select. (clj->js {:layers [selector-layer]
-                                                                :style  styles/highlight-style
-                                                                })))
+                       (-> selector (.getFeatures)
+                           (.on "change:length"
+                                (fn [e]
+                                  (let [features (.-target e)]
+                                    (if (= 1 (.getLength features))
+                                      (reset! selected (-> features (.item 0) (.get "name")))
+                                      (reset! selected nil))))))
 
-                (-> selector (.getFeatures)
-                    (.on "change:length"
-                         (fn [e]
-                           (let [features (.-target e)]
-                             (if (= 1 (.getLength features))
-                               (reset! selected (-> features (.item 0) (.get "name")))
-                               (reset! selected nil))))))
+                       (.addInteraction map1 selector)
+                       (.addControl map1 zoom-to-extent-control)
+                       )
+     :reagent-render (fn [] [:div#map])}))
 
-                (.addInteraction map1 selector)
-                (.addControl map1 zoom-to-extent-control)
-                )}))
-
-(def base (get (:query (url/url (-> js/window .-location .-href))) "base" ""))
-
-(defn make-link [sheet]
-  "Replaces $SHEET with sheet"
-  (clojure.string/replace base "$SHEET" sheet))
-
-(defn download-link [selected]
+(defn download-link [base selected]
   (when @selected
-    [:a {:href (make-link @selected)} "Download"]))
+    (let [link (clojure.string/replace base "$SHEET" @selected)]
+      [:a {:href link} "Download"])))
 
-(defn app []
+(defn app [download-base sheets-identifier]
    [:div
-    [selector-map]
+    [selector-map sheets-identifier]
     [:table
      [:tr [:td "KAARTBLAD"] [:td @selected]]
-     [:tr [:td "DOWNLOAD"] [:td (download-link selected)]]]])
+     [:tr [:td "DOWNLOAD"] [:td (download-link download-base selected)]]]])
 
 (defn ^:export run []
-  (reagent/render [app] (.getElementById js/document "app")))
+  (let [options (:query (url/url (-> js/window .-location .-href)))
+        download-base (get options "base" "")
+        sheets-id (get options "id" "")]
+    (reagent/render [app download-base sheets-id] (.getElementById js/document "app"))))
