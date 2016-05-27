@@ -8,6 +8,7 @@ pom.xml.asc
 *.class
 /.lein-*
 /.nrepl-port
+/resources/GITREF
 /resources/public/out
 /resources/public/release
 /.repl
