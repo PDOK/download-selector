@@ -7,7 +7,7 @@
   (let [label (.get feature "name")]
     (ol.style.Style. (clj->js {:stroke (ol.style.Stroke. (clj->js {:color "#3399CC"
                                                                    :width 1.25}))
-                               :fill   (ol.style.Fill. (clj->js {:color "rgba(255,255,255,0.3)"}))
+                               :fill   (ol.style.Fill. (clj->js {:color "rgba(255,255,255,0.5)"}))
                                :text   (ol.style.Text. (clj->js {:text   label
                                                                  :fill   (ol.style.Fill. (clj->js {:color "white"}))
                                                                  :stroke (ol.style.Stroke. (clj->js {:color "#3399CC"
@@ -16,7 +16,7 @@
   (let [label (.get feature "name")]
     (ol.style.Style. (clj->js {:stroke (ol.style.Stroke. (clj->js {:color "#3399CC"
                                                                    :width 1.25}))
-                               :fill   (ol.style.Fill. (clj->js {:color "rgba(255,255,255,0.3)"}))}))))
+                               :fill   (ol.style.Fill. (clj->js {:color "rgba(255,255,255,0.5)"}))}))))
 
 (defn less-more [less-style more-style view from-zoom]
   (fn [feature resolution]
@@ -31,6 +31,6 @@
                                                                    :width 2}))
                                :fill   (ol.style.Fill. (clj->js {:color "rgba(255,255,255,0)"}))
                                :text   (ol.style.Text. (clj->js {:text   label
-                                                                 :fill   (ol.style.Fill. (clj->js {:color "black"}))
+                                                                 :fill   (ol.style.Fill. (clj->js {:color "white"}))
                                                                  :stroke (ol.style.Stroke. (clj->js {:color "#3399CC"
                                                                                                      :width 3}))}))}))))
