@@ -108,7 +108,7 @@
 (defn download-link [base selected]
   (when @selected
     (let [link (clojure.string/replace base "$SHEET" @selected)]
-      [:a {:href link} "Download"])))
+      [:a {:href link :target "_top"} "Download"])))
 
 (defn app [download-base sheets-identifier]
    [:div
