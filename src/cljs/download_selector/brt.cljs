@@ -36,8 +36,8 @@
 
 (def selector-view (View. (clj->js {:projection view-projection
                                     :center     (ext/getCenter projection-extent)
-                                    :zoom       2.5
-                                    :minZoom    2.5
+                                    :zoom       2.3
+                                    :minZoom    2.3
                                     :maxZoom    11.5})))
 
 (defn exp [x n]

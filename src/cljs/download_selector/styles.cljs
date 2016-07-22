@@ -21,7 +21,7 @@
 (defn less-more [less-style more-style view from-zoom]
   (fn [feature resolution]
     (let [zoom (.getZoom view)]
-      (if (< zoom from-zoom)
+      (if (and (< zoom from-zoom) (not (= "ZEEEXT" (.get feature "name"))))
         (less-style feature resolution)
         (more-style feature resolution)))))
 
