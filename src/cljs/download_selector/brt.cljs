@@ -66,6 +66,7 @@
                  "brt-25d" sheets/brt-25d
                  "brt-50d" sheets/brt-50d
                  "brt-100d" sheets/brt-100d
+                 "brt-250d" sheets/brt-250d
                  sheets/brt-rd)
         selector-features (sheets/create-features sheets)
         selector-source (ol.source.Vector. (clj->js {:features selector-features}))
