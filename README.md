@@ -1,3 +1,5 @@
+# DEPRECATED
+
 Download selector
 =================
 
