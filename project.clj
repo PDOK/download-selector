@@ -12,6 +12,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.8.51"]
                  [com.cemerick/url "0.1.1"]
+                 [nrepl "0.3.1"]
                  [cljsjs/jquery "2.2.2-0"]
                  [cljsjs/openlayers "3.15.1"]
                  [reagent "0.5.1"
@@ -34,7 +35,7 @@
                           org.clojure/clojurescript
                           org.clojure/core.async
                           org.clojure/tools.analyzer.jvm]]
-             [lein-asset-minifier "0.3.0"
+             [lein-asset-minifier "0.4.6"
               :exclusions [org.clojure/clojure]]]
 
 
@@ -43,8 +44,10 @@
   :source-paths ["src/clj"]
   :target-path "target"
 
-  :minify-assets {:assets  {"resources/public/release/app.css" ["resources/public/css/ol.css" "resources/public/css/site.css"]}
-                  :options {:optimization :advanced}}
+  :minify-assets
+  [[:css {:source ["resources/public/css/ol.css" "resources/public/css/site.css"]
+          :target "resources/public/release/app.css"}]]
+
 
   :profiles {:dev {:hooks [leiningen.cljsbuild]
                    :cljsbuild {:builds {:dev {:source-paths ["src/cljs"]
