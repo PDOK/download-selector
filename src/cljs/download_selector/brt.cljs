@@ -47,8 +47,8 @@
 (def resolutions (clj->js (into [] (map #(/ size (exp 2 %)) (range 14)))))
 
 (def background (ol.layer.Tile. (clj->js {:source (ol.source.WMTS.
-                                                    (clj->js {:url        "//geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart"
-                                                              :layer      "brtachtergrondkaart"
+                                                    (clj->js {:url        "//service.pdok.nl/brt/achtergrondkaart/wmts/v2_0?"
+                                                              :layer      "standaard"
                                                               :matrixSet  matrixset-name
                                                               :format     "image/png"
                                                               :projection projection
